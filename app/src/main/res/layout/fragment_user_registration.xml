@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragments.LoginFragment">
+
+    <TextView
+            android:id="@+id/user_registration_welcome"
+            android:text="@string/user_registration_welcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    />
+    <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp"/>
+    <EditText
+            android:id="@+id/user_registration_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email_placeholder"
+            android:inputType="textEmailAddress"
+    />
+    <EditText
+            android:id="@+id/user_registration_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password_placeholder"
+            android:inputType="textPassword"
+    />
+
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+    />
+
+</LinearLayout>

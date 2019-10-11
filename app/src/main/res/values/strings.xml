@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Futsal Ursus</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="login_welcome">Załóż grupę lub dołącz do istniejącej</string>
+    <string name="group_choice_welcome">Wybierz grupę</string>
+    <string name="user_registration_welcome">Zapisz się do grupy</string>
+    <string name="group_registration_welcome">Utwórz grupę</string>
+    <string name="main_page_match">Najbliższy mecz odbędzie się</string>
+    <string name="main_page_training">Najbliższy trening odbędzie się</string>
+    <string name="main_page_training_players_title">Frekwencja na treningu</string>
+    <string name="main_page_match_players_title">Frekwencja na meczu</string>
+    <string name="login">Zaloguj</string>
+    <string name="register">Zarejestruj</string>
+    <string name="field_required">Pole wymagane!</string>
+    <string name="login_successful_text">Zalogowano</string>
+    <string name="login_unsuccessful_text">Niepoprawny login lub hasło</string>
+    <string name="server_error">Błąd serwera, spróbuj później</string>
+    <string name="user_registration"><u>Zarejestruj jako członek grupy</u></string>
+    <string name="device_registration"><u>Dołącz do grupy bez rejestracji</u></string>
+    <string name="group_registration"><u>Zarejestruj jako administrator grupy</u></string>
+    <string name="email_placeholder">adres e-mail</string>
+    <string name="password_placeholder">hasło</string>
+    <string name="group_name_placeholder">nazwa grupy</string>
+    <string name="main_page_imagebutton_present_description">Obecny</string>
+    <string name="main_page_imagebutton_lastminute_description">Dam znać do 3 godzin przed treningiem</string>
+    <string name="main_page_imagebutton_absent_description">Nieobecny</string>
+    <string name="forward">Dalej</string>
+    <string name="zero">0</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
