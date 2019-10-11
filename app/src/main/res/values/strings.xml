@@ -11,6 +11,7 @@
     <string name="main_page_training_players_title">Frekwencja na treningu</string>
     <string name="main_page_match_players_title">Frekwencja na meczu</string>
     <string name="login">Zaloguj</string>
+    <string name="logout">Wyloguj</string>
     <string name="register">Zarejestruj</string>
     <string name="field_required">Pole wymagane!</string>
     <string name="login_successful_text">Zalogowano</string>

@@ -18,5 +18,8 @@ class MainPageFragment : BaseFragment() {
                 bundleOf("group_id" to 1, "event_id" to 2)
             )
         }
+        floating_settings_button.setOnClickListener {
+            findNavController().navigate(R.id.action_global_settingsFragment)
+        }
     }
 }
