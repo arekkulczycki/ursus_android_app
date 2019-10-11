@@ -1,23 +1,26 @@
 package com.example.futsal_ursus.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.futsal_ursus.R
 import com.example.futsal_ursus.models.data.Participant
-import com.example.futsal_ursus.viewholders.ParticipantViewHolder
+import kotlinx.android.synthetic.main.row_participant.view.*
 
 class ParticipantRecyclerViewAdapter(private val itemList: List<Participant>) :
-    RecyclerView.Adapter<ParticipantViewHolder>() {
+    RecyclerView.Adapter<ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParticipantViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.row_participant, parent, false)
-        return ParticipantViewHolder(itemView)
+        return ViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(viewHolder: ParticipantViewHolder, position: Int) {
+    @SuppressLint("SetTextI18n")
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val item = getItem(position)
-        viewHolder.bind(item!!)
+        viewHolder.full_name.text = "${item?.first_name} ${item?.last_name}"
     }
 
     private fun getItem(position: Int): Participant? {
@@ -25,4 +28,8 @@ class ParticipantRecyclerViewAdapter(private val itemList: List<Participant>) :
     }
 
     override fun getItemCount(): Int = itemList.size
+}
+
+class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
+    val full_name = view.full_name
 }

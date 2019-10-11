@@ -40,8 +40,11 @@
     <fragment android:id="@+id/groupRegistrationFragment"
               android:name="com.example.futsal_ursus.fragments.GroupRegistrationFragment"
               android:label="fragment_group_registration" tools:layout="@layout/fragment_group_registration">
-        <action android:id="@+id/action_groupRegistrationFragment_pop" app:popUpTo="@+id/loginFragment"
-                app:popUpToInclusive="true" app:destination="@+id/loginFragment"/>
+        <action
+                android:id="@+id/action_groupRegistrationFragment_pop"
+                app:destination="@+id/mainPageFragment"
+                app:popUpTo="@+id/mainPageFragment"
+                app:popUpToInclusive="true" />
     </fragment>
     <action android:id="@+id/action_logout" app:destination="@id/loginFragment"
             app:popUpTo="@+id/loginFragment"/>
@@ -49,5 +52,12 @@
             android:id="@+id/participantsListFragment"
             android:name="com.example.futsal_ursus.fragments.ParticipantsListFragment"
             android:label="fragment_players_list"
-            tools:layout="@layout/fragment_participants_list" />
+            tools:layout="@layout/fragment_participants_list" >
+        <argument
+                android:name="group_id"
+                app:argType="integer" />
+        <argument
+                android:name="event_id"
+                app:argType="integer" />
+    </fragment>
 </navigation>

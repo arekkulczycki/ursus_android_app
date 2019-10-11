@@ -8,6 +8,7 @@ class AppSettings {
         private val serverUrl: String
             get() = when {
                 server == "local" -> "http://10.0.2.2:8000"
+                server == "office" -> "http://10.45.45.115:8000"
                 server == "dev" -> "https://ursus-backend.herokuapp.com"
                 else -> "http://10.0.2.2:8000"
             }

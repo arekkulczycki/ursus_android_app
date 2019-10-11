@@ -35,8 +35,10 @@ class LoginFragment : BaseFragment() {
             val credentials = Credentials(username, password)
             val url: String = getUrl("/user/token/")
             APIRequest().post(url, credentials, {
-                val token = it.getOrDefault("token", "")
-                if (!token.isEmpty())
+                @Suppress("UNCHECKED_CAST")
+                it as Map<String, String>?
+                val token = it?.getOrDefault("token", "")
+                if (token != null && !token.isEmpty())
                     EventBus.getDefault().post(LoginEvent(true, token))
                 else
                     EventBus.getDefault().post(LoginEvent(false, null))
