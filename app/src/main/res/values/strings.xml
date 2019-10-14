@@ -6,13 +6,13 @@
     <string name="group_choice_welcome">Wybierz grupę</string>
     <string name="user_registration_welcome">Zapisz się do grupy</string>
     <string name="group_registration_welcome">Utwórz grupę</string>
-    <string name="main_page_match">Najbliższy mecz</string>
-    <string name="main_page_training">Najbliższy trening</string>
-    <string name="main_page_training_players_title">Frekwencja na treningu</string>
-    <string name="main_page_match_players_title">Frekwencja na meczu</string>
+    <string name="main_page_match">najbliższy mecz</string>
+    <string name="main_page_training">najbliższy trening</string>
+    <string name="main_page_training_players_title">obecność na treningu</string>
+    <string name="main_page_match_players_title">obecność na meczu</string>
     <string name="login">zaloguj</string>
     <string name="logout">wyloguj</string>
-    <string name="register">zarejestruj</string>
+    <string name="register">dołącz</string>
     <string name="field_required">Pole wymagane!</string>
     <string name="login_successful_text">Zalogowano</string>
     <string name="login_unsuccessful_text">Niepoprawny login lub hasło</string>
@@ -30,6 +30,8 @@
     <string name="main_page_imagebutton_absent_description">Nieobecny</string>
     <string name="forward">Dalej</string>
     <string name="zero">0</string>
+    <string name="participant_number_title">l. p.</string>
+    <string name="participant_name_title">zawodnik</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

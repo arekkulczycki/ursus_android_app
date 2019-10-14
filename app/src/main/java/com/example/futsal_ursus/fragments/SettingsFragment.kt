@@ -5,12 +5,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.futsal_ursus.R
 import com.example.futsal_ursus.prefs
 import kotlinx.android.synthetic.main.fragment_settings.*
+import kotlinx.android.synthetic.main.top_bar.*
 
 class SettingsFragment : BaseFragment() {
     override val layoutResource: Int = R.layout.fragment_settings
     override fun eventBusEnabled(): Boolean = true
 
     override fun initFragment(view: View) {
+        top_bar_settings_button.visibility = View.GONE
         logout_button.setOnClickListener {
             logout()
         }

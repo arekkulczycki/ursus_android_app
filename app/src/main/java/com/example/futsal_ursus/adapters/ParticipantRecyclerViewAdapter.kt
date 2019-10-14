@@ -20,7 +20,8 @@ class ParticipantRecyclerViewAdapter(private val itemList: List<Participant>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val item = getItem(position)
-        viewHolder.full_name.text = "${item?.first_name} ${item?.last_name}"
+        viewHolder.participant_number.text = (position + 1).toString()
+        viewHolder.participant_full_name.text = "${item?.first_name} ${item?.last_name}"
     }
 
     private fun getItem(position: Int): Participant? {
@@ -31,5 +32,6 @@ class ParticipantRecyclerViewAdapter(private val itemList: List<Participant>) :
 }
 
 class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-    val full_name = view.full_name
+    val participant_number = view.participant_number
+    val participant_full_name = view.participant_full_name
 }
