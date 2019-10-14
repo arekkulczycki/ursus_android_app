@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-        android:id="@+id/participant_chart"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout android:layout_width="56dp"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/info_frame_black"
+    android:gravity="center"
+    android:orientation="vertical"
+    app:srcCompat="@drawable/info_frame_black"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-            android:id="@+id/chart_total"
+    <Space
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <RelativeLayout
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0">
+
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_alignParentBottom="true"
-            android:contentDescription="chart total"
-            app:srcCompat="@drawable/info_frame_black" />
-
-    <ImageView
-            android:id="@+id/chart_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:height="100dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_alignParentBottom="true"
-            android:contentDescription="chart bottom"
+            android:contentDescription="chart"
             app:srcCompat="@drawable/info_frame" />
 
-    <TextView
-            android:id="@+id/chart_bottom_text"
+        <TextView
+            android:id="@+id/chart_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
             android:text="12"
-            android:textSize="18sp"
             android:textColor="@android:color/white"
+            android:textSize="18sp"
             android:visibility="visible" />
-
-</RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

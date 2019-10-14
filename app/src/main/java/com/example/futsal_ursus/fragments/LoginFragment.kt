@@ -40,13 +40,9 @@ class LoginFragment : BaseFragment() {
             val url: String = getUrl("/user/token/")
             APIRequest().post(url, credentials, {
                 @Suppress("UNCHECKED_CAST")
-                it as Map<String, String>?
-                val token = it?.getOrDefault("token", "")
-                if (token != null && !token.isEmpty())
-                    EventBus.getDefault().post(LoginEvent(true, token))
-                else
-                    EventBus.getDefault().post(LoginEvent(false, token))
-            }, acceptedCodes = listOf(400))
+                it as LoginEvent
+                EventBus.getDefault().post(it)
+            }, deserializer = LoginEvent.Deserializer())
         } else
             login_button.isEnabled = true
     }
@@ -77,6 +73,9 @@ class LoginFragment : BaseFragment() {
         login_button.isEnabled = true
         if (event.success) {
             prefs.login_token = event.token
+            prefs.attended_groups = event.attended_groups
+            if (prefs.active_group_id == 0)
+                prefs.active_group_id = prefs.attended_groups.first()
             Toast.makeText(context, getString(R.string.login_successful_text), Toast.LENGTH_SHORT)
                 .show()
             findNavController().navigate(R.id.action_loginFragment_to_mainPageFragment, null)
@@ -89,6 +88,7 @@ class LoginFragment : BaseFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     override fun onServerErrorEvent(event: ServerErrorEvent) {
         login_button.isEnabled = true
+        super.onServerErrorEvent(event)
     }
 
     companion object {

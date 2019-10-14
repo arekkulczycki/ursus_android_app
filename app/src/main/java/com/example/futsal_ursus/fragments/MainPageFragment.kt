@@ -4,7 +4,10 @@ import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnimationUtils
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.Space
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.futsal_ursus.AppSettings
@@ -15,7 +18,7 @@ import com.example.futsal_ursus.prefs
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.participant_chart.view.*
 import kotlinx.android.synthetic.main.top_bar.*
-import kotlin.math.max
+
 
 class MainPageFragment : BaseFragment() {
     override val layoutResource: Int = R.layout.fragment_main_page
@@ -34,8 +37,8 @@ class MainPageFragment : BaseFragment() {
         }
 
         initData()
-//        syncData()
-        initAnimations()
+        if (prefs.active_group_id > 0)
+            syncData()
 
         main_page_match_present.setOnClickListener {
             findNavController().navigate(
@@ -58,21 +61,23 @@ class MainPageFragment : BaseFragment() {
     }
 
     private fun syncData() {
-        val url = AppSettings.getUrl("/events/")
+        val url = AppSettings.getUrl("/events/${prefs.active_group_id}/")
         APIRequest().get(url, {
             @Suppress("UNCHECKED_CAST")
             it as List<Event>
-            prefs.next_training_datetime = it[0].datetime.toString()
+            // dane pierwszego wydarzenia
+            prefs.next_training_datetime = it[0].start_date.toString()
             prefs.next_training_address = it[0].address
             prefs.present_next_training = it[0].present
             next_training_participants_present = it[0].participants_present
             next_training_participants_max = it[0].participants_max
 
-            prefs.next_match_datetime = it[1].datetime.toString()
+            // dane drugiego wydarzenia
+            prefs.next_match_datetime = it[1].start_date.toString()
             prefs.next_match_address = it[1].address
             prefs.present_next_match = it[1].present
-            next_match_participants_present = it[0].participants_present
-            next_match_participants_max = it[0].participants_max
+            next_match_participants_present = it[1].participants_present
+            next_match_participants_max = it[1].participants_max
 
             initAnimations()
             initData()
@@ -84,6 +89,8 @@ class MainPageFragment : BaseFragment() {
         training_location.text = prefs.next_training_address
         match_datetime.text = prefs.next_match_datetime
         match_location.text = prefs.next_match_address
+        training_chart_container.chart_text.text = next_training_participants_present.toString()
+        match_chart_container.chart_text.text = next_match_participants_present.toString()
     }
 
     private fun initAnimations() {
@@ -96,21 +103,26 @@ class MainPageFragment : BaseFragment() {
         else if (prefs.present_next_match == false)
             runAnimation(main_page_match_absent, main_page_match_present)
 
-        //TODO: animacja wykresów obecności
-        next_match_participants_present = 7
-        next_match_participants_max = 12
-        val coefficient = (next_match_participants_present / next_match_participants_max).toFloat()
-        val max_height = chart_total.height
-        println(max_height)
-        println(chart_total.layoutParams.height)
-        val height = (coefficient * max_height).toInt()
-        println(height)
-        val valueAnimator = ValueAnimator.ofInt(0, height)
+        val training_coefficient = next_training_participants_present.toFloat() / next_training_participants_max.toFloat()
+        val match_coefficient = next_match_participants_present.toFloat() / next_match_participants_max.toFloat()
+        runChartAnimation(training_chart_container.chart, training_chart_container.space, training_coefficient)
+        runChartAnimation(match_chart_container.chart, match_chart_container.space, match_coefficient)
+    }
+
+    private fun runChartAnimation(chart: View, space: Space, coefficient: Float) {
+        val chart_params = (chart.layoutParams as LinearLayout.LayoutParams)
+        val space_params = (space.layoutParams as LinearLayout.LayoutParams)
+        val valueAnimator = ValueAnimator.ofFloat(0f, coefficient)
         valueAnimator.addUpdateListener {
-            chart_bottom.layoutParams.height = it.animatedValue as Int
+            chart_params.weight = it.animatedValue as Float
+            space_params.weight = 1f - it.animatedValue as Float
+            try {
+                chart.requestLayout()
+                space.requestLayout()
+            } catch(e: Exception) {}
         }
-        valueAnimator.duration = 500
-        valueAnimator.interpolator = AccelerateInterpolator(0.5f)
+        valueAnimator.duration = 3000
+        valueAnimator.interpolator = DecelerateInterpolator(3f)
         valueAnimator.start()
     }
 

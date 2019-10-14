@@ -2,11 +2,20 @@ package com.example.futsal_ursus.models
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.futsal_ursus.models.data.Event
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class Prefs (context: Context) {
     val PREFS_FILENAME = "preferences"
     val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, 0)
+
+    var active_group_id: Int
+        get() = prefs.getInt("active_group_id", 0)
+        set(value) = prefs.edit().putInt("active_group_id", value).apply()
+
+    var attended_groups: List<Int>
+        get() = Gson().fromJson(prefs.getString("attended_groups", ""), object : TypeToken<List<Int>>() {}.type)
+        set(value) = prefs.edit().putString("attended_groups", Gson().toJson(value)).apply()
 
     var login_token: String?
         get() = prefs.getString("login_token", null)

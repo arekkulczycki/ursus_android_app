@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.futsal_ursus.AppSettings
 import com.example.futsal_ursus.R
 import com.example.futsal_ursus.models.data.Credentials
+import com.example.futsal_ursus.models.data.Group
 import com.example.futsal_ursus.models.events.RegistrationEvent
 import com.example.futsal_ursus.models.events.ServerErrorEvent
 import com.example.futsal_ursus.network.APIRequest
@@ -20,7 +21,10 @@ class GroupChoiceRegistrationFragment : BaseFragment() {
     override val layoutResource: Int = R.layout.fragment_group_choice_registration
     override fun eventBusEnabled(): Boolean = true
 
+    var chosen_group_id: Int? = null
+
     override fun initFragment(view: View) {
+        syncGroups()
         register_button.setOnClickListener {
             register()
         }
@@ -31,17 +35,13 @@ class GroupChoiceRegistrationFragment : BaseFragment() {
         if (validate()) {
             val username = register_username.text.toString()
             val password = register_password.text.toString()
-            val credentials = Credentials(username, password)
+            val credentials = Credentials(username, password, chosen_group_id)
             val url: String = AppSettings.getUrl("/user/register/")
             APIRequest().post(url, credentials, {
+                println("*****************88")
                 @Suppress("UNCHECKED_CAST")
-                it as Map<String, String>?
-                val reason = it?.getOrDefault("reason", "0")!!.toInt()
-                val token = it?.getOrDefault("token", "")
-                if (token != null && !token.isEmpty())
-                    EventBus.getDefault().post(RegistrationEvent(true, reason, token))
-                else
-                    EventBus.getDefault().post(RegistrationEvent(false, reason, token))
+                it as RegistrationEvent
+                EventBus.getDefault().post(it)
             })
         } else
             register_button.isEnabled = true
@@ -65,12 +65,26 @@ class GroupChoiceRegistrationFragment : BaseFragment() {
         return isValid
     }
 
+    private fun syncGroups() {
+        //TODO: wybór grupy do której dołącza user
+        val url: String = AppSettings.getUrl("/groups/")
+        APIRequest().get(url, {
+            @Suppress("UNCHECKED_CAST")
+            it as List<Group>
+            if (!it.isEmpty())
+                chosen_group_id = it.first().id
+        }, deserializer = Group.Deserializer())
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRegisterEvent(event: RegistrationEvent) {
         EventBus.getDefault().removeStickyEvent(event)
         register_button.isEnabled = true
+        println("****************")
+        println(event)
         if (event.success) {
             prefs.login_token = event.token
+            prefs.attended_groups = event.attended_groups
             Toast.makeText(context, getString(R.string.login_successful_text), Toast.LENGTH_SHORT)
                 .show()
             findNavController().navigate(R.id.action_groupChoiceRegistrationFragment_to_mainPageFragment, null)
@@ -85,6 +99,7 @@ class GroupChoiceRegistrationFragment : BaseFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     override fun onServerErrorEvent(event: ServerErrorEvent) {
         register_button.isEnabled = true
+        super.onServerErrorEvent(event)
     }
 
     companion object {

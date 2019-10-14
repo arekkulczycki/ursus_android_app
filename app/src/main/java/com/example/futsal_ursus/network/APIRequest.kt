@@ -46,14 +46,14 @@ class APIRequest {
             if (response.statusCode == 200 || response.statusCode in acceptedCodes) {
                 val (r, err) = result
                 if (err != null)
-                    EventBus.getDefault().post(ServerErrorEvent(response.statusCode, err.message))
+                    EventBus.getDefault().postSticky(ServerErrorEvent(response.statusCode, err.message))
                 else
                     func(r)
             }
             else if (response.statusCode == 403)
-                EventBus.getDefault().post(UnauthorizedEvent())
+                EventBus.getDefault().postSticky(UnauthorizedEvent())
             else
-                EventBus.getDefault().post(ServerErrorEvent(response.statusCode, response.responseMessage))
+                EventBus.getDefault().postSticky(ServerErrorEvent(response.statusCode, response.responseMessage))
         }
     }
 }
