@@ -6,11 +6,17 @@
 
     <fragment android:id="@+id/loginFragment" android:name="com.example.futsal_ursus.fragments.LoginFragment"
               android:label="fragment_login" tools:layout="@layout/fragment_login">
-        <action android:id="@+id/action_loginFragment_to_mainPageFragment" app:destination="@id/mainPageFragment"/>
+        <action
+            android:id="@+id/action_loginFragment_to_mainPageFragment"
+            app:destination="@id/mainPageFragment"
+            app:popUpTo="@+id/mainPageFragment"
+            app:popUpToInclusive="true" />
         <action android:id="@+id/action_loginFragment_to_groupChoiceRegistrationFragment"
                 app:destination="@id/groupChoiceRegistrationFragment"/>
-        <action android:id="@+id/action_loginFragment_to_groupRegistrationFragment"
-                app:destination="@id/groupRegistrationFragment"/>
+        <action
+            android:id="@+id/action_loginFragment_to_groupRegistrationFragment"
+            app:destination="@id/groupRegistrationFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment android:id="@+id/settingsFragment" android:name="com.example.futsal_ursus.fragments.SettingsFragment"
               android:label="fragment_settings" tools:layout="@layout/fragment_settings"/>
@@ -36,6 +42,11 @@
               tools:layout="@layout/fragment_group_choice_registration">
         <action android:id="@+id/action_groupChoiceRegistrationFragment_to_userRegistrationFragment"
                 app:destination="@id/userRegistrationFragment"/>
+        <action
+            android:id="@+id/action_groupChoiceRegistrationFragment_to_mainPageFragment"
+            app:destination="@id/mainPageFragment"
+            app:popUpTo="@+id/mainPageFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment android:id="@+id/groupRegistrationFragment"
               android:name="com.example.futsal_ursus.fragments.GroupRegistrationFragment"

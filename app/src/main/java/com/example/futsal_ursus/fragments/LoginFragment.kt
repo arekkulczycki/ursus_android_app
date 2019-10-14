@@ -22,8 +22,12 @@ class LoginFragment : BaseFragment() {
     override fun eventBusEnabled(): Boolean = true
 
     override fun initFragment(view: View) {
+        login_username.requestFocus()
         login_button.setOnClickListener {
             login()
+        }
+        register_button.setOnClickListener {
+            register()
         }
     }
 
@@ -41,10 +45,14 @@ class LoginFragment : BaseFragment() {
                 if (token != null && !token.isEmpty())
                     EventBus.getDefault().post(LoginEvent(true, token))
                 else
-                    EventBus.getDefault().post(LoginEvent(false, null))
+                    EventBus.getDefault().post(LoginEvent(false, token))
             }, acceptedCodes = listOf(400))
         } else
             login_button.isEnabled = true
+    }
+
+    private fun register() {
+        findNavController().navigate(R.id.action_loginFragment_to_groupChoiceRegistrationFragment, null)
     }
 
     private fun validate(): Boolean {

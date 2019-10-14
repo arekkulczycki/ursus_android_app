@@ -7,6 +7,8 @@
         android:layout_height="match_parent"
         tools:context=".activities.MainActivity">
 
-    <include layout="@layout/content_main"/>
+    <include
+        layout="@layout/content_main"
+        android:background="#D2C9BE" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
