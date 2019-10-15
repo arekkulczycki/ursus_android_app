@@ -65,9 +65,6 @@
             android:label="fragment_players_list"
             tools:layout="@layout/fragment_participants_list" >
         <argument
-                android:name="group_id"
-                app:argType="integer" />
-        <argument
                 android:name="event_id"
                 app:argType="integer" />
     </fragment>

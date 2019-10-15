@@ -10,7 +10,7 @@ data class Group (
 ){
     class Deserializer: ResponseDeserializable<List<Group>> {
         private val objType = object : TypeToken<List<Group>>() {}.type
-        override fun deserialize(content: String): List<Group>? =
+        override fun deserialize(content: String): List<Group> =
             try { Gson().fromJson(content, objType) } catch (e: Exception) { emptyList() }
     }
 }

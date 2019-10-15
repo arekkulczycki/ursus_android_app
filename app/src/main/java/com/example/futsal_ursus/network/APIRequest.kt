@@ -25,7 +25,7 @@ class APIRequest {
         }
     }
 
-    fun post(url: String, data: Any? = null, func: (r: Any?) -> Unit, headers: List<Pair<String, Any>> = emptyList(),
+    fun post(url: String, data: Any, func: (r: Any?) -> Unit, headers: List<Pair<String, Any>> = emptyList(),
              acceptedCodes: List<Int> = emptyList(), deserializer: ResponseDeserializable<Any> = MapDeserializer(),
              flag: String? = null
     ) {
@@ -39,9 +39,8 @@ class APIRequest {
     fun reaction(request: Request, func: (r: Any?) -> Unit, headers: List<Pair<String, Any>> = emptyList(),
                  acceptedCodes: List<Int> = emptyList(), deserializer: ResponseDeserializable<Any>, flag: String?){
         println(prefs.login_token)
-        if (headers.isEmpty())
-            request.header("Content-Type" to "application/json", "Authorization" to "jwt ${prefs.login_token}")
-        else
+        request.header("Content-Type" to "application/json", "Authorization" to "Token ${prefs.login_token}")
+        if (!headers.isEmpty())
             headers.forEach {
                 request.appendHeader(it)
             }
@@ -49,8 +48,10 @@ class APIRequest {
         request.responseObject(deserializer){ req, response, result ->
             if (response.statusCode == 200 || response.statusCode in acceptedCodes) {
                 val (r, err) = result
-                if (err != null)
+                if (err != null) {
                     EventBus.getDefault().postSticky(ServerErrorEvent(response.statusCode, err.message, flag))
+                    //TODO: właściwie to jest błąd aplikacji, trzeba zgłaszać
+                }
                 else
                     func(r)
             }

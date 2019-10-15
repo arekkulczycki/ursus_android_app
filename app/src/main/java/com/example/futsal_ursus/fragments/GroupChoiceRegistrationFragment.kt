@@ -38,11 +38,10 @@ class GroupChoiceRegistrationFragment : BaseFragment() {
             val credentials = Credentials(username, password, chosen_group_id)
             val url: String = AppSettings.getUrl("/user/register/")
             APIRequest().post(url, credentials, {
-                println("*****************88")
                 @Suppress("UNCHECKED_CAST")
                 it as RegistrationEvent
                 EventBus.getDefault().post(it)
-            })
+            }, deserializer = RegistrationEvent.Deserializer())
         } else
             register_button.isEnabled = true
     }
@@ -80,11 +79,11 @@ class GroupChoiceRegistrationFragment : BaseFragment() {
     fun onRegisterEvent(event: RegistrationEvent) {
         EventBus.getDefault().removeStickyEvent(event)
         register_button.isEnabled = true
-        println("****************")
-        println(event)
         if (event.success) {
             prefs.login_token = event.token
-            prefs.attended_groups = event.attended_groups
+            val attended_groups = event.attended_groups
+            prefs.attended_groups = attended_groups
+            prefs.active_group_id = attended_groups.first()
             Toast.makeText(context, getString(R.string.login_successful_text), Toast.LENGTH_SHORT)
                 .show()
             findNavController().navigate(R.id.action_groupChoiceRegistrationFragment_to_mainPageFragment, null)

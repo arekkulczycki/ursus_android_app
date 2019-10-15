@@ -19,7 +19,7 @@ data class Event (
 ){
     class Deserializer: ResponseDeserializable<List<Event>> {
         private val objType = object : TypeToken<List<Event>>() {}.type
-        override fun deserialize(content: String): List<Event>? =
+        override fun deserialize(content: String): List<Event> =
             try { Gson().fromJson(content, objType) } catch (e: Exception) { emptyList() }
     }
 }

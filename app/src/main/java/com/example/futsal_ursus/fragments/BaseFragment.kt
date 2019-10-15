@@ -108,4 +108,8 @@ abstract class BaseFragment : Fragment() {
         Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_SHORT)
             .show()
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    open fun onBaseEvent(event: BaseEvent) {
+    }
 }

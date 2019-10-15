@@ -8,16 +8,20 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Space
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.futsal_ursus.AppSettings
 import com.example.futsal_ursus.R
 import com.example.futsal_ursus.models.data.Event
+import com.example.futsal_ursus.models.events.UnauthorizedEvent
 import com.example.futsal_ursus.network.APIRequest
 import com.example.futsal_ursus.prefs
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.participant_chart.view.*
 import kotlinx.android.synthetic.main.top_bar.*
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 class MainPageFragment : BaseFragment() {
@@ -38,36 +42,67 @@ class MainPageFragment : BaseFragment() {
         if (prefs.active_group_id > 0)
             syncData()
 
-        main_page_match_present.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_mainPageFragment_to_playersListFragment,
-                bundleOf("group_id" to 1, "event_id" to 2)
-            )
+        training_chart_container.setOnClickListener {
+            if (next_training != null)
+                findNavController().navigate(
+                    R.id.action_mainPageFragment_to_playersListFragment,
+                    bundleOf("event_id" to next_training?.id)
+                )
         }
+        match_chart_container.setOnClickListener {
+            if (next_match != null)
+                findNavController().navigate(
+                    R.id.action_mainPageFragment_to_playersListFragment,
+                    bundleOf("event_id" to next_match?.id)
+                )
+        }
+        //TODO: uporządkować poniższe
         main_page_training_present.setOnClickListener {
-            runAnimation(main_page_training_present, main_page_training_absent)
-            postInfo(next_training?.id, true, "training_present", { prefs.present_next_training = true })
+            if (prefs.present_next_training != true){
+                runAnimation(main_page_training_present, main_page_training_absent)
+                postInfo(next_training, true, "training_present", { prefs.present_next_training = true })
+            }
         }
         main_page_training_absent.setOnClickListener {
-            runAnimation(main_page_training_absent, main_page_training_present)
-            postInfo(next_training?.id, false, "training_absent", { prefs.present_next_training = false })
+            if (prefs.present_next_training != false){
+                runAnimation(main_page_training_absent, main_page_training_present)
+                postInfo(next_training, false, "training_absent", { prefs.present_next_training = false })
+            }
         }
         main_page_match_present.setOnClickListener {
-            runAnimation(main_page_match_present, main_page_match_absent)
-            postInfo(next_match?.id, true, "match_present", { prefs.present_next_match = true })
+            if (prefs.present_next_match != true) {
+                runAnimation(main_page_match_present, main_page_match_absent)
+                postInfo(next_match, true, "match_present", { prefs.present_next_match = true })
+            }
         }
         main_page_match_absent.setOnClickListener {
-            runAnimation(main_page_match_absent, main_page_match_present)
-            postInfo(next_match?.id, false, "match_absent", { prefs.present_next_match = false })
+            if (prefs.present_next_match != false) {
+                runAnimation(main_page_match_absent, main_page_match_present)
+                postInfo(next_match, false, "match_absent", { prefs.present_next_match = false })
+            }
         }
     }
 
-    private fun postInfo(event_id: Int?, present: Boolean, flag: String, func: () -> Unit) {
-//        val body = if (present) Pair("present", "yes") else Pair("present", "no")
-        val body = mapOf("present" to present, "event_id" to event_id)
+    private fun postInfo(event: Event?, present: Boolean, flag: String, func: () -> Unit) {
+        if (event == null)
+            return
+        val body = mapOf("present" to present, "event_id" to event.id)
         val url = AppSettings.getUrl("/present/")
         APIRequest().post(url, body, {
             func()
+            val toAddStart = if (event.present == true && present) -1 else if (event.present == false && !present) 1 else 0
+            val toAdd = if (event.present == true) if (present) 0 else -1 else if (present) 1 else 0
+            val start_coefficient = (event.participants_present + toAddStart).toFloat() / event.participants_max.toFloat()
+//            event.participants_present += toAdd
+            val coefficient = (event.participants_present + toAdd).toFloat() / event.participants_max.toFloat()
+            if ("training" in flag){
+                runChartAnimation(training_chart_container.chart, training_chart_container.space, coefficient, start_coefficient)
+                training_chart_container.chart_text.text = (event.participants_present + toAdd).toString()
+            }
+            if ("match" in flag){
+                runChartAnimation(match_chart_container.chart, match_chart_container.space, coefficient, start_coefficient)
+                match_chart_container.chart_text.text = (event.participants_present + toAdd).toString()
+            }
         }, flag = flag)
     }
 
@@ -76,20 +111,22 @@ class MainPageFragment : BaseFragment() {
         APIRequest().get(url, {
             @Suppress("UNCHECKED_CAST")
             it as List<Event>
-            // dane pierwszego wydarzenia
-            next_training = it[0]
-            prefs.next_training_datetime = next_training?.start_date.toString()
-            prefs.next_training_address = next_training?.address
-            prefs.present_next_training = next_training?.present
+            if (it.count() == 2) {
+                // dane pierwszego wydarzenia
+                next_training = it[0]
+                prefs.next_training_datetime = next_training?.start_date.toString()
+                prefs.next_training_address = next_training?.address
+                prefs.present_next_training = next_training?.present
 
-            // dane drugiego wydarzenia
-            next_match = it[1]
-            prefs.next_match_datetime = next_match?.start_date.toString()
-            prefs.next_match_address = next_match?.address
-            prefs.present_next_match = next_match?.present
+                // dane drugiego wydarzenia
+                next_match = it[1]
+                prefs.next_match_datetime = next_match?.start_date.toString()
+                prefs.next_match_address = next_match?.address
+                prefs.present_next_match = next_match?.present
 
-            initAnimations()
-            initData()
+                initAnimations()
+                initData()
+            }
         }, deserializer = Event.Deserializer())
     }
 
@@ -98,6 +135,8 @@ class MainPageFragment : BaseFragment() {
         training_location.text = prefs.next_training_address
         match_datetime.text = prefs.next_match_datetime
         match_location.text = prefs.next_match_address
+        training_chart_container.chart_text.text = next_training?.participants_present.toString()
+        match_chart_container.chart_text.text = next_match?.participants_present.toString()
     }
 
     private fun initAnimations() {
@@ -120,10 +159,10 @@ class MainPageFragment : BaseFragment() {
         }
     }
 
-    private fun runChartAnimation(chart: View, space: Space, coefficient: Float) {
+    private fun runChartAnimation(chart: View, space: Space, coefficient: Float, start_coefficient: Float = 0f) {
         val chart_params = (chart.layoutParams as LinearLayout.LayoutParams)
         val space_params = (space.layoutParams as LinearLayout.LayoutParams)
-        val valueAnimator = ValueAnimator.ofFloat(0f, coefficient)
+        val valueAnimator = ValueAnimator.ofFloat(start_coefficient, coefficient)
         valueAnimator.addUpdateListener {
             chart_params.weight = it.animatedValue as Float
             space_params.weight = 1f - it.animatedValue as Float
@@ -147,5 +186,12 @@ class MainPageFragment : BaseFragment() {
         valueAnimator.duration = 200
         valueAnimator.interpolator = AccelerateInterpolator(0.5f)
         valueAnimator.start()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onUnauthorizedEvent(event: UnauthorizedEvent) {
+        //TODO: action_logout
+        Toast.makeText(context, getString(R.string.token_expired), Toast.LENGTH_SHORT)
+            .show()
     }
 }

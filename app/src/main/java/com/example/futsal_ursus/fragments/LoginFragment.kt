@@ -73,9 +73,10 @@ class LoginFragment : BaseFragment() {
         login_button.isEnabled = true
         if (event.success) {
             prefs.login_token = event.token
-            prefs.attended_groups = event.attended_groups
+            val attended_groups = event.attended_groups
+            prefs.attended_groups = attended_groups
             if (prefs.active_group_id == 0)
-                prefs.active_group_id = prefs.attended_groups.first()
+                prefs.active_group_id = attended_groups.first()
             Toast.makeText(context, getString(R.string.login_successful_text), Toast.LENGTH_SHORT)
                 .show()
             findNavController().navigate(R.id.action_loginFragment_to_mainPageFragment, null)

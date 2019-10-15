@@ -8,12 +8,53 @@
 
     <include layout="@layout/top_bar"/>
 
+    <EditText
+            android:id="@+id/first_name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/first_name_placeholder"
+            android:inputType="text"
+            android:nextFocusDown="@+id/last_name"
+            android:nextFocusRight="@+id/last_name"
+            android:nextFocusForward="@+id/last_name"
+            android:layout_gravity="center"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textSize="21sp" />
+
+    <EditText
+            android:id="@+id/last_name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/second_name_placeholder"
+            android:inputType="text"
+            android:nextFocusDown="@+id/save_button"
+            android:nextFocusRight="@+id/save_button"
+            android:nextFocusForward="@+id/save_button"
+            android:layout_gravity="center"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textSize="21sp" />
+
+    <Button
+            android:id="@+id/save_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/colorPrimary"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="@string/save"
+            android:textAllCaps="false"
+            android:textSize="21sp" />
+
     <Button
             android:id="@+id/logout_button"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@color/colorPrimary"
+            android:layout_marginTop="48dp"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="@string/logout"

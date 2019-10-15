@@ -17,6 +17,7 @@ class ParticipantsListFragment : BaseFragment() {
     override val layoutResource: Int = R.layout.fragment_participants_list
     override fun eventBusEnabled(): Boolean = true
     private val args: ParticipantsListFragmentArgs by navArgs()
+    var participants: List<Participant> = emptyList()
 
     override fun initFragment(view: View) {
         if (prefs.login_token.isNullOrEmpty())
@@ -24,19 +25,27 @@ class ParticipantsListFragment : BaseFragment() {
         top_bar_settings_button.setOnClickListener {
             findNavController().navigate(R.id.action_global_settingsFragment)
         }
+        initParticipantsList()
 
-        val url = AppSettings.getUrl("/user/team/${args.groupId}/${args.eventId}/")
+        val url = AppSettings.getUrl("/team/${args.eventId}/")
         APIRequest().get(url, {
             @Suppress("UNCHECKED_CAST")
             it as List<Participant>
-            syncParticipantsList(it)
+            participants = it
+            syncParticipantsList()
         }, deserializer=Participant.Deserializer())
     }
 
-    fun syncParticipantsList(participants: List<Participant>){
+    private fun initParticipantsList(){
         participants_recycler_view.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = ParticipantRecyclerViewAdapter(participants)
         }
     }
+
+    private fun syncParticipantsList(){
+        println(participants)
+        participants_recycler_view.adapter?.notifyDataSetChanged()
+    }
+
 }
