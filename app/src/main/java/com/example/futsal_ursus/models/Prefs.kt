@@ -23,7 +23,7 @@ class Prefs (context: Context) {
 
     var next_training_address: String?
         get() = prefs.getString("next_training_address", null)
-        set(value) = prefs.edit().putString("login_token", value).apply()
+        set(value) = prefs.edit().putString("next_training_address", value).apply()
 
     var next_training_datetime: String?
         get() = prefs.getString("next_training_datetime", null)

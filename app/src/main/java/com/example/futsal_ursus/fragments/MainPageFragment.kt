@@ -24,10 +24,8 @@ class MainPageFragment : BaseFragment() {
     override val layoutResource: Int = R.layout.fragment_main_page
     override fun eventBusEnabled(): Boolean = true
 
-    private var next_training_participants_present: Int = 0
-    private var next_training_participants_max: Int = 0
-    private var next_match_participants_present: Int = 0
-    private var next_match_participants_max: Int = 0
+    private var next_training: Event? = null  //TODO: zmienić na lateinit i ładować dopóki nie znajdzie, a jak nie znajdzie to widok offline
+    private var next_match: Event? = null
 
     override fun initFragment(view: View) {
         if (prefs.login_token.isNullOrEmpty())
@@ -48,16 +46,29 @@ class MainPageFragment : BaseFragment() {
         }
         main_page_training_present.setOnClickListener {
             runAnimation(main_page_training_present, main_page_training_absent)
+            postInfo(next_training?.id, true, "training_present", { prefs.present_next_training = true })
         }
         main_page_training_absent.setOnClickListener {
             runAnimation(main_page_training_absent, main_page_training_present)
+            postInfo(next_training?.id, false, "training_absent", { prefs.present_next_training = false })
         }
         main_page_match_present.setOnClickListener {
             runAnimation(main_page_match_present, main_page_match_absent)
+            postInfo(next_match?.id, true, "match_present", { prefs.present_next_match = true })
         }
         main_page_match_absent.setOnClickListener {
             runAnimation(main_page_match_absent, main_page_match_present)
+            postInfo(next_match?.id, false, "match_absent", { prefs.present_next_match = false })
         }
+    }
+
+    private fun postInfo(event_id: Int?, present: Boolean, flag: String, func: () -> Unit) {
+//        val body = if (present) Pair("present", "yes") else Pair("present", "no")
+        val body = mapOf("present" to present, "event_id" to event_id)
+        val url = AppSettings.getUrl("/present/")
+        APIRequest().post(url, body, {
+            func()
+        }, flag = flag)
     }
 
     private fun syncData() {
@@ -66,18 +77,16 @@ class MainPageFragment : BaseFragment() {
             @Suppress("UNCHECKED_CAST")
             it as List<Event>
             // dane pierwszego wydarzenia
-            prefs.next_training_datetime = it[0].start_date.toString()
-            prefs.next_training_address = it[0].address
-            prefs.present_next_training = it[0].present
-            next_training_participants_present = it[0].participants_present
-            next_training_participants_max = it[0].participants_max
+            next_training = it[0]
+            prefs.next_training_datetime = next_training?.start_date.toString()
+            prefs.next_training_address = next_training?.address
+            prefs.present_next_training = next_training?.present
 
             // dane drugiego wydarzenia
-            prefs.next_match_datetime = it[1].start_date.toString()
-            prefs.next_match_address = it[1].address
-            prefs.present_next_match = it[1].present
-            next_match_participants_present = it[1].participants_present
-            next_match_participants_max = it[1].participants_max
+            next_match = it[1]
+            prefs.next_match_datetime = next_match?.start_date.toString()
+            prefs.next_match_address = next_match?.address
+            prefs.present_next_match = next_match?.present
 
             initAnimations()
             initData()
@@ -89,8 +98,6 @@ class MainPageFragment : BaseFragment() {
         training_location.text = prefs.next_training_address
         match_datetime.text = prefs.next_match_datetime
         match_location.text = prefs.next_match_address
-        training_chart_container.chart_text.text = next_training_participants_present.toString()
-        match_chart_container.chart_text.text = next_match_participants_present.toString()
     }
 
     private fun initAnimations() {
@@ -103,10 +110,14 @@ class MainPageFragment : BaseFragment() {
         else if (prefs.present_next_match == false)
             runAnimation(main_page_match_absent, main_page_match_present)
 
-        val training_coefficient = next_training_participants_present.toFloat() / next_training_participants_max.toFloat()
-        val match_coefficient = next_match_participants_present.toFloat() / next_match_participants_max.toFloat()
-        runChartAnimation(training_chart_container.chart, training_chart_container.space, training_coefficient)
-        runChartAnimation(match_chart_container.chart, match_chart_container.space, match_coefficient)
+        if (next_training != null) {
+            val training_coefficient = next_training!!.participants_present.toFloat() / next_training!!.participants_max.toFloat()
+            runChartAnimation(training_chart_container.chart, training_chart_container.space, training_coefficient)
+        }
+        if (next_match != null) {
+            val match_coefficient = next_match!!.participants_present.toFloat() / next_match!!.participants_max.toFloat()
+            runChartAnimation(match_chart_container.chart, match_chart_container.space, match_coefficient)
+        }
     }
 
     private fun runChartAnimation(chart: View, space: Space, coefficient: Float) {
