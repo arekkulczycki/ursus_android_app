@@ -6,8 +6,8 @@
     <string name="group_choice_welcome">Wybierz grupę</string>
     <string name="user_registration_welcome">Zapisz się do grupy</string>
     <string name="group_registration_welcome">Utwórz grupę</string>
-    <string name="main_page_match">najbliższy mecz</string>
-    <string name="main_page_training">najbliższy trening</string>
+    <string name="main_page_match">najbliższy mecz:</string>
+    <string name="main_page_training">najbliższy trening:</string>
     <string name="main_page_training_players_title">obecność na treningu</string>
     <string name="main_page_match_players_title">obecność na meczu</string>
     <string name="save">zapisz</string>

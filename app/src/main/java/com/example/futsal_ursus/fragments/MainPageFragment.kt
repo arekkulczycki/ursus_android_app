@@ -1,6 +1,7 @@
 package com.example.futsal_ursus.fragments
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnimationUtils
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.participant_chart.view.*
 import kotlinx.android.synthetic.main.top_bar.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.text.SimpleDateFormat
 
 
 class MainPageFragment : BaseFragment() {
@@ -46,14 +48,14 @@ class MainPageFragment : BaseFragment() {
             if (next_training != null)
                 findNavController().navigate(
                     R.id.action_mainPageFragment_to_playersListFragment,
-                    bundleOf("event_id" to next_training?.id)
+                    bundleOf("event_id" to next_training?.id, "event_title" to "${next_training?.type_name}: ${next_training?.name}")
                 )
         }
         match_chart_container.setOnClickListener {
             if (next_match != null)
                 findNavController().navigate(
                     R.id.action_mainPageFragment_to_playersListFragment,
-                    bundleOf("event_id" to next_match?.id)
+                    bundleOf("event_id" to next_match?.id, "event_title" to "${next_match?.type_name}: ${next_match?.name}")
                 )
         }
         //TODO: czasami coś się wali z animacją jakby początkowa wartość była błędna po pierwszym ustawieniu flagi
@@ -108,6 +110,8 @@ class MainPageFragment : BaseFragment() {
     }
 
     private fun syncData() {
+        @SuppressLint("SimpleDateFormat")
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd\nHH:mm")
         val url = AppSettings.getUrl("/events/${prefs.active_group_id}/")
         APIRequest().get(url, {
             @Suppress("UNCHECKED_CAST")
@@ -115,15 +119,19 @@ class MainPageFragment : BaseFragment() {
             if (it.count() == 2) {
                 // dane pierwszego wydarzenia
                 next_training = it[0]
-                prefs.next_training_datetime = next_training?.start_date.toString()
+                val training_date = next_training?.start_date
+                prefs.next_training_datetime = if (training_date == null) "" else dateFormat.format(training_date)
                 prefs.next_training_address = next_training?.address
                 prefs.present_next_training = next_training?.present
+                main_page_match_name.text = next_training?.name
 
                 // dane drugiego wydarzenia
                 next_match = it[1]
-                prefs.next_match_datetime = next_match?.start_date.toString()
+                val match_date = next_match?.start_date
+                prefs.next_match_datetime = if (match_date == null) "" else dateFormat.format(match_date)
                 prefs.next_match_address = next_match?.address
                 prefs.present_next_match = next_match?.present
+                main_page_training_name.text = next_match?.name
 
                 initAnimations()
                 initData()

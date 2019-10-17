@@ -67,5 +67,8 @@
         <argument
                 android:name="event_id"
                 app:argType="integer" />
+        <argument
+                android:name="event_title"
+                app:argType="string" />
     </fragment>
 </navigation>

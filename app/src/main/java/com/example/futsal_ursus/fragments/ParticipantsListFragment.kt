@@ -29,6 +29,8 @@ class ParticipantsListFragment : BaseFragment() {
         top_bar_settings_button.setOnClickListener {
             findNavController().navigate(R.id.action_global_settingsFragment)
         }
+        //TODO: zrobić poniższe prawidłowo
+        team_title.text = args.eventTitle.replace("match", "mecz").replace("training", "trening")
 
         val url = AppSettings.getUrl("/team/${args.eventId}/")
         APIRequest().get(url, {

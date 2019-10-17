@@ -10,6 +10,16 @@
 
     <include layout="@layout/top_bar"/>
 
+    <TextView
+            android:id="@+id/team_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="tytuł wydarzenia"
+            android:textSize="18sp" />
+
     <LinearLayout
             android:id="@+id/participant_row"
             android:layout_width="match_parent"
