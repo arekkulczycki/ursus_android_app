@@ -9,6 +9,7 @@ import co.techinsports.futsal_ursus.models.data.Credentials
 import co.techinsports.futsal_ursus.models.data.Group
 import co.techinsports.futsal_ursus.models.events.RegistrationEvent
 import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
+import co.techinsports.futsal_ursus.models.events.UnauthorizedEvent
 import co.techinsports.futsal_ursus.network.APIRequest
 import co.techinsports.futsal_ursus.prefs
 import kotlinx.android.synthetic.main.fragment_group_choice_registration.*
@@ -102,6 +103,14 @@ class GroupChoiceRegistrationFragment : BaseFragment() {
     override fun onServerErrorEvent(event: ServerErrorEvent) {
         register_button.isEnabled = true
         super.onServerErrorEvent(event)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onUnauthorizedEvent(event: UnauthorizedEvent) {
+        register_button.isEnabled = true
+        prefs.login_token = null
+        Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_SHORT)
+            .show()
     }
 
     companion object {

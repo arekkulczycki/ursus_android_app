@@ -21,7 +21,7 @@
     <string name="field_required">Pole wymagane!</string>
     <string name="login_successful_text">Zalogowano</string>
     <string name="login_unsuccessful_text">Niepoprawny login lub hasło</string>
-    <string name="email_does_not_exist">Podany adres e-mail nie istanieje</string>
+    <string name="email_does_not_exist">Podany adres e-mail nie istnieje</string>
     <string name="email_already_in_database">podany adres e-mail jest już zarejestrowany</string>
     <string name="group_does_not_exist">Nie można zarejestrować do grupy</string>
     <string name="register_unsuccessful_text">Niepoprawny login lub hasło</string>
