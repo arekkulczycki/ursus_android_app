@@ -20,6 +20,8 @@
             android:layout_gravity="center"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
+        android:maxLines="1"
+        android:maxLength="25"
             android:textSize="21sp" />
 
     <EditText
@@ -34,6 +36,8 @@
             android:layout_gravity="center"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
+        android:maxLines="1"
+        android:maxLength="25"
             android:textSize="21sp" />
 
     <EditText
@@ -48,6 +52,8 @@
             android:layout_gravity="center"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
+        android:maxLines="1"
+        android:maxLength="15"
             android:textSize="21sp" />
 
     <Button

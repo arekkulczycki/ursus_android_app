@@ -11,7 +11,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "com.example.futsal_ursus"
+        applicationId "co.techinsports.futsal_ursus"
         minSdkVersion 24
         targetSdkVersion 29
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
