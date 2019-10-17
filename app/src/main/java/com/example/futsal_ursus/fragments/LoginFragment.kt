@@ -2,11 +2,14 @@ package com.example.futsal_ursus.fragments
 
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.navigation.fragment.findNavController
 import com.example.futsal_ursus.AppSettings.Companion.getUrl
 import kotlinx.android.synthetic.main.fragment_login.*
 
 import com.example.futsal_ursus.R
+import com.example.futsal_ursus.activities.MainActivity
 import com.example.futsal_ursus.models.data.Credentials
 import com.example.futsal_ursus.models.events.LoginEvent
 import com.example.futsal_ursus.models.events.ServerErrorEvent
@@ -22,7 +25,16 @@ class LoginFragment : BaseFragment() {
     override val layoutResource: Int = R.layout.fragment_login
     override fun eventBusEnabled(): Boolean = true
 
+    inner class CustomBackPressedCallback : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finishAffinity((activity as MainActivity))
+        }
+    }
+
     override fun initFragment(view: View) {
+        val mainActivity = (activity as MainActivity)
+        val callback = CustomBackPressedCallback()
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         login_username.requestFocus()
         login_button.setOnClickListener {
             login()
