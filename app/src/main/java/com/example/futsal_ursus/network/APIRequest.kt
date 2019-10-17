@@ -38,8 +38,10 @@ class APIRequest {
 
     fun reaction(request: Request, func: (r: Any?) -> Unit, headers: List<Pair<String, Any>> = emptyList(),
                  acceptedCodes: List<Int> = emptyList(), deserializer: ResponseDeserializable<Any>, flag: String?){
+        request.header("Content-Type" to "application/json")
         println(prefs.login_token)
-        request.header("Content-Type" to "application/json", "Authorization" to "Token ${prefs.login_token}")
+        if (prefs.login_token != null)
+            request.appendHeader("Authorization" to "Token ${prefs.login_token}")
         if (!headers.isEmpty())
             headers.forEach {
                 request.appendHeader(it)

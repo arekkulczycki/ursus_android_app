@@ -56,6 +56,7 @@ class MainPageFragment : BaseFragment() {
                     bundleOf("event_id" to next_match?.id)
                 )
         }
+        //TODO: czasami coś się wali z animacją jakby początkowa wartość była błędna po pierwszym ustawieniu flagi
         //TODO: uporządkować poniższe
         main_page_training_present.setOnClickListener {
             if (prefs.present_next_training != true){
@@ -90,7 +91,7 @@ class MainPageFragment : BaseFragment() {
         val url = AppSettings.getUrl("/present/")
         APIRequest().post(url, body, {
             func()
-            val toAddStart = if (event.present == true && present) -1 else if (event.present == false && !present) 1 else 0
+            val toAddStart = if (event.present == true && present) -1 else if ((event.present == null || event.present == false) && !present) 1 else 0
             val toAdd = if (event.present == true) if (present) 0 else -1 else if (present) 1 else 0
             val start_coefficient = (event.participants_present + toAddStart).toFloat() / event.participants_max.toFloat()
 //            event.participants_present += toAdd
@@ -190,8 +191,9 @@ class MainPageFragment : BaseFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     override fun onUnauthorizedEvent(event: UnauthorizedEvent) {
-        //TODO: action_logout
+        findNavController().navigate(R.id.action_logout)
         Toast.makeText(context, getString(R.string.token_expired), Toast.LENGTH_SHORT)
             .show()
+        super.onUnauthorizedEvent(event)
     }
 }

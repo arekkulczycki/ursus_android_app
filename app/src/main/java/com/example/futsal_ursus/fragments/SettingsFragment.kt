@@ -6,11 +6,13 @@ import androidx.navigation.fragment.findNavController
 import com.example.futsal_ursus.AppSettings
 import com.example.futsal_ursus.R
 import com.example.futsal_ursus.models.data.Participant
+import com.example.futsal_ursus.models.events.UnauthorizedEvent
 import com.example.futsal_ursus.network.APIRequest
 import com.example.futsal_ursus.prefs
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.top_bar.*
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class SettingsFragment : BaseFragment() {
     override val layoutResource: Int = R.layout.fragment_settings
@@ -40,9 +42,11 @@ class SettingsFragment : BaseFragment() {
         APIRequest().get(url, {
             @Suppress("UNCHECKED_CAST")
             it as List<Participant>
+            println(it)
             if (it.count() > 0) {
                 first_name.setText(it.first().first_name)
                 last_name.setText(it.first().last_name)
+                phone.setText(it.first().phone)
                 save_button.isEnabled = true
             }
         }, deserializer = Participant.Deserializer())
@@ -56,10 +60,19 @@ class SettingsFragment : BaseFragment() {
             val body =
                 mapOf("first_name" to first_name.text.toString(),
                     "last_name" to last_name.text.toString(),
+                    "phone" to phone.text.toString(),
                     "group_id" to prefs.active_group_id)
             APIRequest().post(url, body, {
                 Toast.makeText(context, getString(R.string.saved), Toast.LENGTH_SHORT).show()
             })
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onUnauthorizedEvent(event: UnauthorizedEvent) {
+        findNavController().navigate(R.id.action_logout)
+        Toast.makeText(context, getString(R.string.token_expired), Toast.LENGTH_SHORT)
+            .show()
+        super.onUnauthorizedEvent(event)
     }
 }

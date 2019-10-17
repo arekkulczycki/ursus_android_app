@@ -28,6 +28,20 @@
             android:layout_height="wrap_content"
             android:hint="@string/second_name_placeholder"
             android:inputType="text"
+            android:nextFocusDown="@+id/phone"
+            android:nextFocusRight="@+id/phone"
+            android:nextFocusForward="@+id/phone"
+            android:layout_gravity="center"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textSize="21sp" />
+
+    <EditText
+            android:id="@+id/phone"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/phone_placeholder"
+            android:inputType="phone"
             android:nextFocusDown="@+id/save_button"
             android:nextFocusRight="@+id/save_button"
             android:nextFocusForward="@+id/save_button"

@@ -13,7 +13,6 @@ import com.example.futsal_ursus.R
 import com.example.futsal_ursus.models.events.BaseEvent
 import com.example.futsal_ursus.models.events.ServerErrorEvent
 import com.example.futsal_ursus.models.events.UnauthorizedEvent
-import kotlinx.android.synthetic.main.fragment_login.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -104,9 +103,6 @@ abstract class BaseFragment : Fragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     open fun onUnauthorizedEvent(event: UnauthorizedEvent) {
-        login_button.isEnabled = true
-        Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_SHORT)
-            .show()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

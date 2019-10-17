@@ -87,11 +87,14 @@ class GroupChoiceRegistrationFragment : BaseFragment() {
             Toast.makeText(context, getString(R.string.login_successful_text), Toast.LENGTH_SHORT)
                 .show()
             findNavController().navigate(R.id.action_groupChoiceRegistrationFragment_to_mainPageFragment, null)
-        } else if (event.reason == 0){
-            Toast.makeText(context, getString(R.string.login_unsuccessful_text), Toast.LENGTH_SHORT)
+        } else if (event.reason == 0)
+            Toast.makeText(context, getString(R.string.email_does_not_exist), Toast.LENGTH_SHORT)
                 .show()
-        } else if (event.reason == 1)
-            Toast.makeText(context, getString(R.string.login_unsuccessful_text), Toast.LENGTH_SHORT)
+        else if (event.reason == 1)
+            Toast.makeText(context, getString(R.string.group_does_not_exist), Toast.LENGTH_SHORT)
+                .show()
+        else if (event.reason == 2)
+            Toast.makeText(context, getString(R.string.email_already_in_database), Toast.LENGTH_SHORT)
                 .show()
     }
 

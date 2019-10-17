@@ -21,7 +21,10 @@ class ParticipantRecyclerViewAdapter(private val itemList: List<Participant>) :
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val item = getItem(position)
         viewHolder.participant_number.text = (position + 1).toString()
-        viewHolder.participant_full_name.text = "${item?.first_name} ${item?.last_name}"
+        if (item?.first_name.isNullOrEmpty() && item?.last_name.isNullOrEmpty())
+            viewHolder.participant_full_name.text = "${item?.email?.take(3)}..."
+        else
+            viewHolder.participant_full_name.text = "${item?.first_name} ${item?.last_name}"
     }
 
     private fun getItem(position: Int): Participant? {

@@ -10,6 +10,7 @@ import com.example.futsal_ursus.R
 import com.example.futsal_ursus.models.data.Credentials
 import com.example.futsal_ursus.models.events.LoginEvent
 import com.example.futsal_ursus.models.events.ServerErrorEvent
+import com.example.futsal_ursus.models.events.UnauthorizedEvent
 import com.example.futsal_ursus.network.APIRequest
 import com.example.futsal_ursus.prefs
 import org.greenrobot.eventbus.EventBus
@@ -90,6 +91,12 @@ class LoginFragment : BaseFragment() {
     override fun onServerErrorEvent(event: ServerErrorEvent) {
         login_button.isEnabled = true
         super.onServerErrorEvent(event)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onUnauthorizedEvent(event: UnauthorizedEvent) {
+        login_button.isEnabled = true
+        super.onUnauthorizedEvent(event)
     }
 
     companion object {
