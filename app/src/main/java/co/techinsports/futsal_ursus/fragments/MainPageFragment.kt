@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import co.techinsports.futsal_ursus.AppSettings
 import co.techinsports.futsal_ursus.R
 import co.techinsports.futsal_ursus.models.data.Event
+import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
 import co.techinsports.futsal_ursus.models.events.UnauthorizedEvent
 import co.techinsports.futsal_ursus.network.APIRequest
 import co.techinsports.futsal_ursus.prefs
@@ -110,33 +111,39 @@ class MainPageFragment : BaseFragment() {
     }
 
     private fun syncData() {
-        @SuppressLint("SimpleDateFormat")
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd\nHH:mm")
         val url = AppSettings.getUrl("/events/${prefs.active_group_id}/")
         APIRequest().get(url, {
             @Suppress("UNCHECKED_CAST")
             it as List<Event>
             if (it.count() == 2) {
-                // dane pierwszego wydarzenia
-                next_training = it[0]
-                val training_date = next_training?.start_date
-                prefs.next_training_datetime = if (training_date == null) "" else dateFormat.format(training_date)
-                prefs.next_training_address = next_training?.address
-                prefs.present_next_training = next_training?.present
-                main_page_match_name.text = next_training?.name
-
-                // dane drugiego wydarzenia
-                next_match = it[1]
-                val match_date = next_match?.start_date
-                prefs.next_match_datetime = if (match_date == null) "" else dateFormat.format(match_date)
-                prefs.next_match_address = next_match?.address
-                prefs.present_next_match = next_match?.present
-                main_page_training_name.text = next_match?.name
-
-                initAnimations()
-                initData()
+                while (main_page_training_name == null && main_page_match_name == null)
+                    Thread.sleep(10)
+                apiReaction(it)
             }
         }, deserializer = Event.Deserializer())
+    }
+
+    private fun apiReaction(it: List<Event>) {
+        @SuppressLint("SimpleDateFormat")
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd\nHH:mm")
+        // dane pierwszego wydarzenia
+        next_training = it[0]
+        val training_date = next_training?.start_date
+        prefs.next_training_datetime = if (training_date == null) "" else dateFormat.format(training_date)
+        prefs.next_training_address = next_training?.address
+        prefs.present_next_training = next_training?.present
+        main_page_training_name.text = next_training?.name
+
+        // dane drugiego wydarzenia
+        next_match = it[1]
+        val match_date = next_match?.start_date
+        prefs.next_match_datetime = if (match_date == null) "" else dateFormat.format(match_date)
+        prefs.next_match_address = next_match?.address
+        prefs.present_next_match = next_match?.present
+        main_page_match_name.text = next_match?.name
+
+        initAnimations()
+        initData()
     }
 
     private fun initData() {
@@ -198,10 +205,16 @@ class MainPageFragment : BaseFragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onServerErrorEvent(event: ServerErrorEvent) {
+        super.onServerErrorEvent(event)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     override fun onUnauthorizedEvent(event: UnauthorizedEvent) {
         findNavController().navigate(R.id.action_logout)
         Toast.makeText(context, getString(R.string.token_expired), Toast.LENGTH_SHORT)
             .show()
         super.onUnauthorizedEvent(event)
     }
+
 }

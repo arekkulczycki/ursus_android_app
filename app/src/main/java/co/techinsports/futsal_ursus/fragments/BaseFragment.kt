@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import co.techinsports.futsal_ursus.R
-import co.techinsports.futsal_ursus.models.events.BaseEvent
+import co.techinsports.futsal_ursus.models.events.LoginEvent
 import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
 import co.techinsports.futsal_ursus.models.events.UnauthorizedEvent
 import org.greenrobot.eventbus.EventBus
@@ -96,6 +96,10 @@ abstract class BaseFragment : Fragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    open fun onLoginEvent(event: LoginEvent) {
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     open fun onServerErrorEvent(event: ServerErrorEvent) {
         Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_SHORT)
             .show()
@@ -105,7 +109,4 @@ abstract class BaseFragment : Fragment() {
     open fun onUnauthorizedEvent(event: UnauthorizedEvent) {
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    open fun onBaseEvent(event: BaseEvent) {
-    }
 }

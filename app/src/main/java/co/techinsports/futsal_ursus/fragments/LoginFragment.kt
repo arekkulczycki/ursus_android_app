@@ -6,8 +6,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.navigation.fragment.findNavController
 import co.techinsports.futsal_ursus.AppSettings.Companion.getUrl
-import kotlinx.android.synthetic.main.fragment_login.*
-
 import co.techinsports.futsal_ursus.R
 import co.techinsports.futsal_ursus.activities.MainActivity
 import co.techinsports.futsal_ursus.models.data.Credentials
@@ -16,6 +14,7 @@ import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
 import co.techinsports.futsal_ursus.models.events.UnauthorizedEvent
 import co.techinsports.futsal_ursus.network.APIRequest
 import co.techinsports.futsal_ursus.prefs
+import kotlinx.android.synthetic.main.fragment_login.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -81,7 +80,7 @@ class LoginFragment : BaseFragment() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onLoginEvent(event: LoginEvent) {
+    override fun onLoginEvent(event: LoginEvent) {
         EventBus.getDefault().removeStickyEvent(event)
         login_button.isEnabled = true
         if (event.success) {
@@ -108,7 +107,9 @@ class LoginFragment : BaseFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     override fun onUnauthorizedEvent(event: UnauthorizedEvent) {
         login_button.isEnabled = true
-        super.onUnauthorizedEvent(event)
+        prefs.login_token = null
+        Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_SHORT)
+            .show()
     }
 
     companion object {

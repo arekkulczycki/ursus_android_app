@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import co.techinsports.futsal_ursus.AppSettings
 import co.techinsports.futsal_ursus.R
 import co.techinsports.futsal_ursus.models.data.Participant
+import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
 import co.techinsports.futsal_ursus.models.events.UnauthorizedEvent
 import co.techinsports.futsal_ursus.network.APIRequest
 import co.techinsports.futsal_ursus.prefs
@@ -66,6 +67,11 @@ class SettingsFragment : BaseFragment() {
                 Toast.makeText(context, getString(R.string.saved), Toast.LENGTH_SHORT).show()
             })
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onServerErrorEvent(event: ServerErrorEvent) {
+        super.onServerErrorEvent(event)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -9,6 +9,7 @@ import co.techinsports.futsal_ursus.AppSettings
 import co.techinsports.futsal_ursus.R
 import co.techinsports.futsal_ursus.adapters.ParticipantRecyclerViewAdapter
 import co.techinsports.futsal_ursus.models.data.Participant
+import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
 import co.techinsports.futsal_ursus.models.events.UnauthorizedEvent
 import co.techinsports.futsal_ursus.network.APIRequest
 import co.techinsports.futsal_ursus.prefs
@@ -52,6 +53,11 @@ class ParticipantsListFragment : BaseFragment() {
     // być może się przyda do odświeżania widoku w przyszłości
     private fun syncParticipantsList(){
         participants_recycler_view.adapter?.notifyDataSetChanged()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    override fun onServerErrorEvent(event: ServerErrorEvent) {
+        super.onServerErrorEvent(event)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
