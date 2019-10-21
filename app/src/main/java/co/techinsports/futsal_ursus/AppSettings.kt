@@ -4,7 +4,7 @@ package co.techinsports.futsal_ursus
 class AppSettings {
     companion object {
         const val PREFERENCE_FILE = "preferences"
-        const val server = "local2"
+        const val server = "dev"
         private val serverUrl: String
             get() = when {
                 server == "local" -> "http://10.0.2.2:8000"
