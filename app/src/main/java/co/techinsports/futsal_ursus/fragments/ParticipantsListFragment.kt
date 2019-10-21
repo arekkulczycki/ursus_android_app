@@ -38,6 +38,10 @@ class ParticipantsListFragment : BaseFragment() {
             @Suppress("UNCHECKED_CAST")
             it as List<Participant>
             participants = it
+            for (i in 1 until 50)
+                if (participants_recycler_view != null)
+                    break
+                Thread.sleep(10)
             initParticipantsList()
         }, deserializer=Participant.Deserializer())
     }

@@ -116,7 +116,9 @@ class MainPageFragment : BaseFragment() {
             @Suppress("UNCHECKED_CAST")
             it as List<Event>
             if (it.count() == 2) {
-                while (main_page_training_name == null && main_page_match_name == null)
+                for (i in 1 until 50)
+                    if (main_page_training_name != null && main_page_match_name != null)
+                        break
                     Thread.sleep(10)
                 apiReaction(it)
             }
