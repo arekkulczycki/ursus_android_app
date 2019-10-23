@@ -41,6 +41,9 @@
     <string name="zero">0</string>
     <string name="participant_number_title">l. p.</string>
     <string name="participant_name_title">zawodnik</string>
+    <string name="training_cancelled">Trening odwołany!</string>
+    <string name="too_few_participants">Brak zawodników</string>
+    <string name="not_called_up">Brak powołania</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

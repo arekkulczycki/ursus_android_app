@@ -2,6 +2,8 @@ package co.techinsports.futsal_ursus.models
 
 import android.content.Context
 import android.content.SharedPreferences
+import co.techinsports.futsal_ursus.AppSettings.Companion.HOURS_BEFORE_EVENT
+import co.techinsports.futsal_ursus.AppSettings.Companion.MINIMUM_PARTICIPANTS
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -12,6 +14,14 @@ class Prefs (context: Context) {
     var active_group_id: Int
         get() = prefs.getInt("active_group_id", 0)
         set(value) = prefs.edit().putInt("active_group_id", value).apply()
+
+    var minimum_participants: Int
+        get() = prefs.getInt("minimum_participants", MINIMUM_PARTICIPANTS)
+        set(value) = prefs.edit().putInt("minimum_participants", value).apply()
+
+    var hours_before_event: Int
+        get() = prefs.getInt("hours_before_event", HOURS_BEFORE_EVENT)
+        set(value) = prefs.edit().putInt("hours_before_event", value).apply()
 
     var attended_groups: List<Int>
         get() = Gson().fromJson(prefs.getString("attended_groups", ""), object : TypeToken<List<Int>>() {}.type)

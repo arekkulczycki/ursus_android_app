@@ -14,6 +14,7 @@ data class Event (
     val end_date: Date,
     val address: String,
     val present: Boolean?,
+    val called_up: Boolean?,
     val participants_present: Int,
     val participants_max: Int
 ){

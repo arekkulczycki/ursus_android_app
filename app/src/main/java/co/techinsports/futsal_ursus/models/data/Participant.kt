@@ -9,7 +9,8 @@ data class Participant (
     val first_name: String,
     val last_name: String,
     val email: String,
-    val phone: String
+    val phone: String,
+    val present: Boolean = true
 ){
     class Deserializer: ResponseDeserializable<List<Participant>> {
         private val objType = object : TypeToken<List<Participant>>() {}.type

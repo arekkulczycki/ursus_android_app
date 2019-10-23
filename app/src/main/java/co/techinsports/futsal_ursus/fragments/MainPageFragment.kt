@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.top_bar.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainPageFragment : BaseFragment() {
@@ -146,15 +147,52 @@ class MainPageFragment : BaseFragment() {
 
         initAnimations()
         initData()
+        checkTrainingTakePlace(next_training?.start_date,
+            if (next_training != null) next_training!!.participants_present else 0)
+        checkMatchCallUp(next_match?.called_up)
     }
 
     private fun initData() {
+        training_alert_container.visibility = View.GONE
+        main_page_training_choice.visibility = View.VISIBLE
         training_datetime.text = prefs.next_training_datetime
         training_location.text = prefs.next_training_address
         match_datetime.text = prefs.next_match_datetime
         match_location.text = prefs.next_match_address
         training_chart_container.chart_text.text = next_training?.participants_present.toString()
         match_chart_container.chart_text.text = next_match?.participants_present.toString()
+    }
+
+    private fun checkTrainingTakePlace(training_date: Date?, participants: Int) {
+        if (training_date == null)
+            return
+        val training_time = training_date.time
+        val now_time = Date().time
+        val diff = training_time - now_time
+        val diff_hours = diff / (60 * 60 * 1000)
+        if (diff_hours <= prefs.hours_before_event && participants < prefs.minimum_participants) {
+            training_alert_container.visibility = View.VISIBLE
+            main_page_training_choice.visibility = View.GONE
+            @SuppressLint("SetTextI18n")
+            training_alert_text.text = "${getString(R.string.training_cancelled)}\n" +
+                    "${getString(R.string.too_few_participants)} (min. ${prefs.minimum_participants})"
+        }
+        else {
+            training_alert_container.visibility = View.GONE
+            main_page_training_choice.visibility = View.VISIBLE
+        }
+    }
+
+    private fun checkMatchCallUp(called_up: Boolean?) {
+        if (called_up == true) {
+            match_alert_container.visibility = View.GONE
+            main_page_match_choice.visibility = View.VISIBLE
+        }
+        else {
+            match_alert_text.text = getString(R.string.not_called_up)
+            match_alert_container.visibility = View.VISIBLE
+            main_page_match_choice.visibility = View.GONE
+        }
     }
 
     private fun initAnimations() {

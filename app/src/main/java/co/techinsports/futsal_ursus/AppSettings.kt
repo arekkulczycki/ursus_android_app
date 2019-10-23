@@ -18,5 +18,7 @@ class AppSettings {
             return String.format("%s%s",
                 serverUrl, url)
         }
+        const val MINIMUM_PARTICIPANTS = 10
+        const val HOURS_BEFORE_EVENT = 8
     }
 }

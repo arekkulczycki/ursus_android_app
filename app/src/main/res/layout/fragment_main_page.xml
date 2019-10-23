@@ -75,40 +75,62 @@
 
         </LinearLayout>
 
+        <FrameLayout
+                android:id="@+id/training_alert_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="48dp"
+                android:layout_marginBottom="10dp"
+                android:background="#FF0000"
+                tools:visibility="gone">
+            <TextView
+                    android:id="@+id/training_alert_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_vertical"
+                    android:gravity="center|center_vertical"
+                    android:minHeight="48dp"
+                    android:text="trening odwołany!"
+                    android:textSize="18sp" />
+        </FrameLayout>
+
         <LinearLayout
-            android:id="@+id/main_page_training_choice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:context=".fragments.LoginFragment">
+                android:id="@+id/main_page_training_choice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:context=".fragments.LoginFragment">
 
             <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
             <ImageButton
-                android:id="@+id/main_page_training_present"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:contentDescription="@string/main_page_imagebutton_present_description"
-                android:src="@drawable/ic_confirm" />
+                    android:id="@+id/main_page_training_present"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/main_page_imagebutton_present_description"
+                    android:src="@drawable/ic_confirm" />
 
             <ImageButton
-                android:id="@+id/main_page_training_absent"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:contentDescription="@string/main_page_imagebutton_absent_description"
-                android:src="@drawable/ic_deny" />
+                    android:id="@+id/main_page_training_absent"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/main_page_imagebutton_absent_description"
+                    android:src="@drawable/ic_deny" />
 
             <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -170,6 +192,28 @@
                 android:text="adres" />
 
         </LinearLayout>
+
+        <FrameLayout
+                android:id="@+id/match_alert_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="48dp"
+                android:layout_marginBottom="10dp"
+                android:background="#FF0000"
+                tools:visibility="visible">
+
+            <TextView
+                    android:id="@+id/match_alert_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_vertical"
+                    android:gravity="center|center_vertical"
+                    android:minHeight="48dp"
+                    android:text="brak powołania"
+                    android:textSize="18sp" />
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/main_page_match_choice"
