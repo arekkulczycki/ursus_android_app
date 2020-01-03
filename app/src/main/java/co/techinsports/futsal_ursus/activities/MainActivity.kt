@@ -1,23 +1,76 @@
 package co.techinsports.futsal_ursus.activities
 
+import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import co.techinsports.futsal_ursus.R
+import co.techinsports.futsal_ursus.network.BluetoothServerController
 import co.techinsports.futsal_ursus.prefs
 import kotlinx.android.synthetic.main.content_main.*
+
+var devices = ArrayList<BluetoothDevice>()
+var devicesMap = HashMap<String, BluetoothDevice>()
+var mArrayAdapter: ArrayAdapter<String>? = null
+
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        registerReceiver(mReceiver, filter) // Don't forget to unregister during onDestroy
+
+        BluetoothServerController(this).start()
 //        setSupportActionBar(toolbar)
+    }
+
+    private val mReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND == action) {
+                // Get the BluetoothDevice object from the Intent
+                val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                val pairedDevice = devicesMap[device?.address]
+                if (pairedDevice == null) {
+                    var index = -1
+                    for (i in devices.indices) {
+                        val tmp = devices[i]
+                        if (tmp.address == device?.address) {
+                            index = i
+                            break
+                        }
+                    }
+
+                    if (index > -1) {
+                        if (device?.name != null) {
+                            mArrayAdapter?.insert(
+                                (if (device.name != null) device.name else "Unknown") + "\n" + device.address,
+                                index
+                            )
+                        }
+                    } else {
+                        if (device != null)
+                            devices.add(device)
+                        // 	Add the name and address to an array adapter to show in a ListView
+                        mArrayAdapter?.add((if (device?.name != null) device.name else "Unknown") + "\n" + device?.address)
+                    }
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -47,6 +100,11 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(mReceiver)
+        super.onDestroy()
     }
 
 }

@@ -1,24 +1,36 @@
 package co.techinsports.futsal_ursus.fragments
 
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.content.IntentFilter
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.navigation.fragment.findNavController
 import co.techinsports.futsal_ursus.AppSettings.Companion.getUrl
 import co.techinsports.futsal_ursus.R
-import co.techinsports.futsal_ursus.activities.MainActivity
+import co.techinsports.futsal_ursus.activities.*
 import co.techinsports.futsal_ursus.models.data.Credentials
 import co.techinsports.futsal_ursus.models.events.LoginEvent
 import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
 import co.techinsports.futsal_ursus.models.events.UnauthorizedEvent
 import co.techinsports.futsal_ursus.network.APIRequest
 import co.techinsports.futsal_ursus.prefs
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
+var devices = ArrayList<BluetoothDevice>()
+var devicesMap = HashMap<String, BluetoothDevice>()
+var mArrayAdapter: ArrayAdapter<String>? = null
+val uuid: UUID = UUID.fromString("8989063a-c9af-463a-b3f1-f21d9b2b827b")
 
 class LoginFragment : BaseFragment() {
     override val layoutResource: Int = R.layout.fragment_login
@@ -30,17 +42,52 @@ class LoginFragment : BaseFragment() {
         }
     }
 
+    fun lookForBluetoothDevices(){
+//        this.textView = findViewById(R.id.textView)
+        login_button.setOnClickListener {
+            if (BluetoothAdapter.getDefaultAdapter() == null) {
+                Snackbar.make(it, "Bluetooth is disabled", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+
+            } else {
+                devicesMap = HashMap()
+                devices = ArrayList()
+                mArrayAdapter!!.clear()
+
+//                val editText = findViewById<EditText>(R.id.editText)
+//                message = editText.text.toString()
+//                editText.text.clear()
+                for (device in BluetoothAdapter.getDefaultAdapter().bondedDevices) {
+                    devicesMap.put(device.address, device)
+                    devices.add(device)
+                    // Add the name and address to an array adapter to show in a ListView
+                    mArrayAdapter!!.add((if (device.name != null) device.name else "Unknown") + "\n" + device.address + "\nPared")
+                }
+
+                // Start discovery process
+                if (BluetoothAdapter.getDefaultAdapter().startDiscovery()) {
+//                    val dialog = SelectDeviceDialog()
+//                    dialog.show(supportFragmentManager, "select_device")
+                    println("started discovery")
+                }
+            }
+        }
+    }
+
     override fun initFragment(view: View) {
         val mainActivity = (activity as MainActivity)
         val callback = CustomBackPressedCallback()
         mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         login_username.requestFocus()
-        login_button.setOnClickListener {
-            login()
-        }
-        register_button.setOnClickListener {
-            register()
-        }
+//        login_button.setOnClickListener {
+//            login()
+//        }
+//        register_button.setOnClickListener {
+//            register()
+//        }
+
+        mArrayAdapter = ArrayAdapter(context, 0)
+        lookForBluetoothDevices()
     }
 
     private fun login() {

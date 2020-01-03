@@ -43,16 +43,13 @@ class SettingsFragment : BaseFragment() {
         APIRequest().get(url, {
             @Suppress("UNCHECKED_CAST")
             it as List<Participant>
-            println(it)
             if (it.count() > 0) {
-                for (i in 1 until 50)
-                    if (first_name != null && last_name != null && phone != null)
-                        break
-                    Thread.sleep(10)
-                first_name.setText(it.first().first_name)
-                last_name.setText(it.first().last_name)
-                phone.setText(it.first().phone)
-                save_button.isEnabled = true
+                if (first_name != null && last_name != null && phone != null) {
+                    first_name.setText(it.first().first_name)
+                    last_name.setText(it.first().last_name)
+                    phone.setText(it.first().phone)
+                    save_button.isEnabled = true
+                }
             }
         }, deserializer = Participant.Deserializer())
     }

@@ -155,6 +155,9 @@ class MainPageFragment : BaseFragment() {
     private fun initData() {
         training_alert_container.visibility = View.GONE
         main_page_training_choice.visibility = View.VISIBLE
+        match_alert_container.visibility = View.GONE
+        main_page_match_choice.visibility = View.VISIBLE
+
         training_datetime.text = prefs.next_training_datetime
         training_location.text = prefs.next_training_address
         match_datetime.text = prefs.next_match_datetime
