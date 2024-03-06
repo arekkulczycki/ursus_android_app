@@ -8,7 +8,7 @@
         android:orientation="vertical"
         tools:context=".fragments.LoginFragment">
 
-    <include layout="@layout/top_bar"/>
+    <include android:id="@+id/participants_top_bar" layout="@layout/top_bar"/>
 
     <TextView
             android:id="@+id/team_title"

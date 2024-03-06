@@ -5,12 +5,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import co.techinsports.futsal_ursus.R
 import co.techinsports.futsal_ursus.prefs
-import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,8 +21,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (prefs.login_token.isNullOrEmpty())
-            findNavController(nav_host_fragment.id).navigate(R.id.action_logout)
+        if (prefs.login_token.isNullOrEmpty()) {
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            navHostFragment.navController.navigate(R.id.action_logout)
+        }
     }
 
     private fun setupActionBar(
@@ -48,5 +50,4 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 }

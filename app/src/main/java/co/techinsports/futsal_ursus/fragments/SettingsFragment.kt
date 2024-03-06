@@ -1,31 +1,39 @@
 package co.techinsports.futsal_ursus.fragments
 
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
 import co.techinsports.futsal_ursus.AppSettings
 import co.techinsports.futsal_ursus.R
+import co.techinsports.futsal_ursus.databinding.FragmentSettingsBinding
 import co.techinsports.futsal_ursus.models.data.Participant
 import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
 import co.techinsports.futsal_ursus.models.events.UnauthorizedEvent
 import co.techinsports.futsal_ursus.network.APIRequest
 import co.techinsports.futsal_ursus.prefs
-import kotlinx.android.synthetic.main.fragment_settings.*
-import kotlinx.android.synthetic.main.top_bar.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class SettingsFragment : BaseFragment() {
-    override val layoutResource: Int = R.layout.fragment_settings
+
+class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     override fun eventBusEnabled(): Boolean = true
 
+    private lateinit var binding: FragmentSettingsBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun initFragment(view: View) {
-        save_button.isEnabled = false
-        top_bar_settings_button.visibility = View.GONE
-        logout_button.setOnClickListener {
+        binding.saveButton.isEnabled = false
+        binding.settingsTopBar.topBarSettingsButton.visibility = View.GONE
+        binding.logoutButton.setOnClickListener {
             logout()
         }
-        save_button.setOnClickListener {
+        binding.saveButton.setOnClickListener {
             saveData()
         }
 
@@ -33,9 +41,9 @@ class SettingsFragment : BaseFragment() {
             syncData()
     }
 
-    private fun logout(){
+    private fun logout() {
         prefs.login_token = null
-        findNavController().navigate(R.id.action_logout)
+        getNavController().navigate(R.id.action_logout)
     }
 
     private fun syncData() {
@@ -46,13 +54,13 @@ class SettingsFragment : BaseFragment() {
             println(it)
             if (it.count() > 0) {
                 for (i in 1 until 50)
-                    if (first_name != null && last_name != null && phone != null)
+                    if (binding.firstName != null && binding.lastName != null && binding.phone != null)
                         break
-                    Thread.sleep(10)
-                first_name.setText(it.first().first_name)
-                last_name.setText(it.first().last_name)
-                phone.setText(it.first().phone)
-                save_button.isEnabled = true
+                Thread.sleep(10)
+                binding.firstName.setText(it.first().first_name)
+                binding.lastName.setText(it.first().last_name)
+                binding.phone.setText(it.first().phone)
+                binding.saveButton.isEnabled = true
             }
         }, deserializer = Participant.Deserializer())
     }
@@ -63,10 +71,12 @@ class SettingsFragment : BaseFragment() {
         else {
             val url = AppSettings.getUrl("/profile/")
             val body =
-                mapOf("first_name" to first_name.text.toString(),
-                    "last_name" to last_name.text.toString(),
-                    "phone" to phone.text.toString(),
-                    "group_id" to prefs.active_group_id)
+                mapOf(
+                    "first_name" to binding.firstName.text.toString(),
+                    "last_name" to binding.lastName.text.toString(),
+                    "phone" to binding.phone.text.toString(),
+                    "group_id" to prefs.active_group_id
+                )
             APIRequest().post(url, body, {
                 Toast.makeText(context, getString(R.string.saved), Toast.LENGTH_SHORT).show()
             })
@@ -80,7 +90,7 @@ class SettingsFragment : BaseFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     override fun onUnauthorizedEvent(event: UnauthorizedEvent) {
-        findNavController().navigate(R.id.action_logout)
+        getNavController().navigate(R.id.action_logout)
         Toast.makeText(context, getString(R.string.token_expired), Toast.LENGTH_SHORT)
             .show()
         super.onUnauthorizedEvent(event)

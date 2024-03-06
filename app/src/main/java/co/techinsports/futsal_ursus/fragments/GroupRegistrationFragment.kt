@@ -1,10 +1,11 @@
 package co.techinsports.futsal_ursus.fragments
 
 import android.view.View
-import co.techinsports.futsal_ursus.R
+import co.techinsports.futsal_ursus.databinding.FragmentGroupRegistrationBinding
 
-class GroupRegistrationFragment : BaseFragment() {
-    override val layoutResource: Int = R.layout.fragment_group_choice_registration
+
+class GroupRegistrationFragment :
+    BaseFragment<FragmentGroupRegistrationBinding>() {
     override fun eventBusEnabled(): Boolean = true
 
     override fun initFragment(view: View) {

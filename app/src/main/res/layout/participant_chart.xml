@@ -11,7 +11,7 @@
     app:srcCompat="@drawable/info_frame_black"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Space
+    <View
         android:id="@+id/space"
         android:layout_width="match_parent"
         android:layout_height="0dp"

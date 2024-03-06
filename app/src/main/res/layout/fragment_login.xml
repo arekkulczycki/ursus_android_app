@@ -1,93 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-            android:orientation="vertical"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+    </data>
+
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".fragments.LoginFragment">
+
+        <ImageView
+            android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".fragments.LoginFragment">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_logo_black" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/ic_logo_black" />
+        <EditText
+            android:id="@+id/login_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
+            android:hint="@string/email_placeholder"
+            android:inputType="textEmailAddress"
+            android:nextFocusDown="@+id/login_password"
+            android:nextFocusRight="@+id/login_password"
+            android:nextFocusForward="@+id/login_password"
+            android:textSize="21sp" />
 
-    <EditText
-        android:id="@+id/login_username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="50dp"
-        android:hint="@string/email_placeholder"
-        android:inputType="textEmailAddress"
-        android:nextFocusDown="@+id/login_password"
-        android:nextFocusRight="@+id/login_password"
-        android:nextFocusForward="@+id/login_password"
-        android:textSize="21sp" />
+        <EditText
+            android:id="@+id/login_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="50dp"
+            android:hint="@string/password_placeholder"
+            android:inputType="textPassword"
+            android:nextFocusDown="@+id/login_button"
+            android:nextFocusRight="@+id/login_button"
+            android:nextFocusForward="@+id/login_button"
+            android:textSize="21sp" />
 
-    <EditText
-        android:id="@+id/login_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="50dp"
-        android:hint="@string/password_placeholder"
-        android:inputType="textPassword"
-        android:nextFocusDown="@+id/login_button"
-        android:nextFocusRight="@+id/login_button"
-        android:nextFocusForward="@+id/login_button"
-        android:textSize="21sp" />
+        <Button
+                android:id="@+id/login_button"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorPrimary"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:text="@string/login"
+                android:textAllCaps="false"
+                android:textSize="21sp" />
 
-    <Button
-            android:id="@+id/login_button"
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/device_registration"
+            android:visibility="gone" />
+
+
+        <TextView
+            android:id="@+id/register_button"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:background="@color/colorPrimary"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:text="@string/login"
+            android:background="?attr/editTextBackground"
+            android:gravity="center"
+            android:linksClickable="true"
+            android:singleLine="false"
+            android:text="@string/register"
             android:textAllCaps="false"
-            android:textSize="21sp" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:clickable="true"
+            android:focusable="true"
+            android:textSize="21sp"
+            android:visibility="visible" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/group_registration"
+            android:visibility="gone" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/device_registration"
-        android:visibility="gone" />
-
-
-    <TextView
-        android:id="@+id/register_button"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="?attr/editTextBackground"
-        android:gravity="center"
-        android:linksClickable="true"
-        android:singleLine="false"
-        android:text="@string/register"
-        android:textAllCaps="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        android:clickable="true"
-        android:focusable="true"
-        android:textSize="21sp"
-        android:visibility="visible" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/group_registration"
-        android:visibility="gone" />
-
-</LinearLayout>
+    </LinearLayout>
+</layout>

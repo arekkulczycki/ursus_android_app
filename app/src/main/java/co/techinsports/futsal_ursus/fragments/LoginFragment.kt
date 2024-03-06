@@ -4,25 +4,25 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat.finishAffinity
-import androidx.navigation.fragment.findNavController
 import co.techinsports.futsal_ursus.AppSettings.Companion.getUrl
 import co.techinsports.futsal_ursus.R
 import co.techinsports.futsal_ursus.activities.MainActivity
+import co.techinsports.futsal_ursus.databinding.FragmentLoginBinding
 import co.techinsports.futsal_ursus.models.data.Credentials
 import co.techinsports.futsal_ursus.models.events.LoginEvent
 import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
 import co.techinsports.futsal_ursus.models.events.UnauthorizedEvent
 import co.techinsports.futsal_ursus.network.APIRequest
 import co.techinsports.futsal_ursus.prefs
-import kotlinx.android.synthetic.main.fragment_login.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-class LoginFragment : BaseFragment() {
-    override val layoutResource: Int = R.layout.fragment_login
+class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
     override fun eventBusEnabled(): Boolean = true
+
+    private val binding get() = viewBinding as FragmentLoginBinding
 
     inner class CustomBackPressedCallback : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -34,20 +34,20 @@ class LoginFragment : BaseFragment() {
         val mainActivity = (activity as MainActivity)
         val callback = CustomBackPressedCallback()
         mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-        login_username.requestFocus()
-        login_button.setOnClickListener {
+        binding.loginUsername.requestFocus()
+        binding.loginButton.setOnClickListener {
             login()
         }
-        register_button.setOnClickListener {
+        binding.registerButton.setOnClickListener {
             register()
         }
     }
 
     private fun login() {
-        login_button.isEnabled = false
+        binding.loginButton.isEnabled = false
         if (validate()) {
-            val username = login_username.text.toString()
-            val password = login_password.text.toString()
+            val username = binding.loginUsername.text.toString()
+            val password = binding.loginPassword.text.toString()
             val credentials = Credentials(username, password)
             val url: String = getUrl("/user/token/")
             APIRequest().post(url, credentials, {
@@ -56,24 +56,24 @@ class LoginFragment : BaseFragment() {
                 EventBus.getDefault().post(it)
             }, deserializer = LoginEvent.Deserializer())
         } else
-            login_button.isEnabled = true
+            binding.loginButton.isEnabled = true
     }
 
     private fun register() {
-        findNavController().navigate(R.id.action_loginFragment_to_groupChoiceRegistrationFragment, null)
+        getNavController().navigate(R.id.action_loginFragment_to_groupChoiceRegistrationFragment, null)
     }
 
     private fun validate(): Boolean {
         var isValid = true
-        val username = login_username.text
-        val password = login_password.text
+        val username = binding.loginUsername.text
+        val password = binding.loginPassword.text
 
         if (username == null || username.isEmpty()) {
-            login_username.error = getString(R.string.field_required)
+            binding.loginUsername.error = getString(R.string.field_required)
             isValid = false
         }
         if (password == null || password.isEmpty()) {
-            login_password.error = getString(R.string.field_required)
+            binding.loginPassword.error = getString(R.string.field_required)
             isValid = false
         }
         return isValid
@@ -82,7 +82,7 @@ class LoginFragment : BaseFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     override fun onLoginEvent(event: LoginEvent) {
         EventBus.getDefault().removeStickyEvent(event)
-        login_button.isEnabled = true
+        binding.loginButton.isEnabled = true
         if (event.success) {
             prefs.login_token = event.token
             val attended_groups = event.attended_groups
@@ -91,7 +91,7 @@ class LoginFragment : BaseFragment() {
             prefs.active_group_id = attended_groups.first()
             Toast.makeText(context, getString(R.string.login_successful_text), Toast.LENGTH_SHORT)
                 .show()
-            findNavController().navigate(R.id.action_loginFragment_to_mainPageFragment, null)
+            getNavController().navigate(R.id.action_loginFragment_to_mainPageFragment, null)
         }
         else
             Toast.makeText(context, getString(R.string.login_unsuccessful_text), Toast.LENGTH_SHORT)
@@ -100,13 +100,13 @@ class LoginFragment : BaseFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     override fun onServerErrorEvent(event: ServerErrorEvent) {
-        login_button.isEnabled = true
+        binding.loginButton.isEnabled = true
         super.onServerErrorEvent(event)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     override fun onUnauthorizedEvent(event: UnauthorizedEvent) {
-        login_button.isEnabled = true
+        binding.loginButton.isEnabled = true
         prefs.login_token = null
         Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_SHORT)
             .show()

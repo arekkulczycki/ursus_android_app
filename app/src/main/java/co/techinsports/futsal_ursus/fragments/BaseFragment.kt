@@ -9,6 +9,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.viewbinding.ViewBinding
 import co.techinsports.futsal_ursus.R
 import co.techinsports.futsal_ursus.models.events.LoginEvent
 import co.techinsports.futsal_ursus.models.events.ServerErrorEvent
@@ -18,19 +21,17 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
-abstract class BaseFragment : Fragment() {
-
-    protected abstract val layoutResource: Int
+abstract class BaseFragment<ViewBindingType : ViewBinding>(
+    private val viewBindingInflater: ((LayoutInflater, ViewGroup?, Boolean) -> ViewBindingType)? = null
+) : Fragment() {
     protected abstract fun initFragment(view: View)
     protected abstract fun eventBusEnabled(): Boolean
 
+    protected var viewBinding: ViewBindingType? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view: View? = null
-        val layoutRes = layoutResource
-        if (layoutRes != -1) {
-            view = inflater.inflate(layoutRes, container, false)
-        }
-        return view
+        viewBinding = viewBindingInflater?.invoke(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,4 +110,7 @@ abstract class BaseFragment : Fragment() {
     open fun onUnauthorizedEvent(event: UnauthorizedEvent) {
     }
 
+    protected fun getNavController(): NavController {
+        return (activity!!.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+    }
 }
